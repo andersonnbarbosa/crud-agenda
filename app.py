@@ -1,14 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 import simplejson as json
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 if __name__ == '__main__':
-    db.create_all()
     app.run()
 
 
@@ -37,7 +37,7 @@ class Contato(db.Model):
 
 @app.route("/", methods=["GET"])
 def index():
-    return "<p>Olá Mundo</p>"
+    return render_template("index.html")
 
 
 @app.route("/contato", methods=["POST"])
@@ -50,8 +50,7 @@ def novoContato():
     )
     db.session.add(contato)
     db.session.commit()
-
-    return 200
+    return 'HTTP/1.1', 201
 
 
 @app.route("/contato", methods=["GET"])
@@ -67,24 +66,24 @@ def todosContatos():
 
 @app.route("/contato/<string:params>", methods=["GET"])
 def busca(params):
-    contato = Contato.query.filter_by(nome = params)
-    contatos = []
-    for i in contato:
-        contatos.append(i.as_dict())
-    return json.dumps(contatos)
+    contato = Contato.query.filter_by(nome = params).first()
+
+    return jsonify(contato.as_dict())
 
 
 @app.route("/contato/<int:id>", methods=["DELETE"])
 def deletarContatos(id):
     contato = Contato.query.get(id)
+    db.session.delete(contato)
+    db.session.commit()
 
-    return 200
+    return jsonify({'result': True})
 
 
 @app.route("/contato/<int:id>", methods=["PUT"])
 def editarContato(id):
     contato = Contato.query.get(id)
-
+    
     return jsonify(contato.as_dict())
 
 
