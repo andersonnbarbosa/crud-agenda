@@ -1,9 +1,20 @@
 button{
     margin-top: 5px;
-    width: 250px;
+    width: 200px;
+    height: 35px;
+}
+
+input{
+    width: 200px;
+    height: 35px;
+}
+
+label{
+    width: 100px;
 }
 
 #btn-search{
+    margin-top: 0px;
     width: 50px;
     height: 40px;
 }
