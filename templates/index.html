@@ -2,16 +2,24 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A Basic HTML5 Template</title>
-<meta name="description" content="A simple HTML5 Template for new projects.">
+<title>Contatos</title>
+<meta name="description" content="Simples agenda de contatos">
 <meta name="author" content="SitePoint">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
 <body>
-    <div class="container container-form">
-        <div class="row">
-            <div class="col-md-4" style="display:none;">
+    <div class="container-fluid container-form">
+        <div class="row row justify-content-md-center">
+            <div class="col-md-4 opcoes">
+                <button id="btn-buscar" onclick="menuBuscar()" class="btn btn-primary">Buscar</button>
+                <button id="btn-cadastrar" onclick="menuCadastrar()" class="btn btn-primary">Cadastrar</button>
+                <button id="btn-deletar" onclick="menuDeletar()" class="btn btn-primary">Deletar</button>
+            </div>
+            <div class="col-md-4 cadastrar">
+                <button id="btn-voltar" onclick="voltar()" class="voltar btn btn-dark">Voltar</button>
                 <h1>Cadastrar</h1>
                 <form action="/contato" method="POST">
                     <label for="">Nome</label>
@@ -19,23 +27,47 @@
                     <label for="">Empresa</label>
                     <input name="empresa" type="text" class="form-group">
                     <label for="">Telefone</label>
-                    <input name="telefone" type="text" class="form-group">
+                    <input name="telefone" type="tel" class="form-group">
                     <label for="">Email</label>
-                    <input name="email" type="text" class="form-group">
-                    <input type="submit" value="Enviar" class="btn-dark">
+                    <input name="email" type="email" class="form-group">
                 </form>
+                <button id="btn-enviar" class="btn btn-dark">Cadastrar</button>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 deletar">
+                <button id="btn-voltar" onclick="voltar()" class="voltar btn btn-dark">Voltar</button>
                 <h1>Deletar</h1>
-                    <label for="">ID</label>
-                    <input id="id" name="id" type="text" class="form-group">
-                    <button onclick="deletar()">Deletar</button>
+                <label for="">ID</label>
+                <input id="id" name="id" type="text" class="form-group">
+                <button class="btn btn-dark" onclick="deletar()">Deletar</button>
+            </div>
+            <div class="col-md-4 buscar">
+                <button id="btn-voltar" onclick="voltar()" class="voltar btn btn-dark">Voltar</button>
+                <h1>Buscar</h1>
+                <div class="container-fluid">
+                    <input type="text" class="form-group">
+                    <button id="btn-search" class="btn btn-dark"><i class="bi bi-search"></i></button>
+                </div>
+                <table class="table resultados">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Oi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ola</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script>
+        $(document).ready(function(){
+            voltar()
+        })
         function deletar() {
             $.ajax({
                 url: "/contato",
@@ -44,6 +76,33 @@
                     // Do something with the result
                 }
             });
+        }
+        function voltar() {
+            $(".opcoes").css("display", "block");
+            $(".deletar").css("display", "none");
+            $(".cadastrar").css("display", "none");
+            $(".buscar").css("display", "none")
+        }
+        function menuCadastrar() {
+            $(".opcoes").css("display", "none");
+            $(".deletar").css("display", "none");
+            $(".cadastrar").css("display", "block");
+            $(".buscar").css("display", "none")
+        }
+        function menuBuscar() {
+            $(".opcoes").css("display", "none");
+            $(".deletar").css("display", "none");
+            $(".cadastrar").css("display", "none");
+            $(".buscar").css("display", "block");
+            $(".resultados").css("display", "none")
+
+        }
+        function menuDeletar() {
+            $(".opcoes").css("display", "none");
+            $(".deletar").css("display", "block");
+            $(".cadastrar").css("display", "none");
+            $(".buscar").css("display", "none")
+
         }
     </script>
 </body>
