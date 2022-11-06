@@ -50,25 +50,40 @@ def novoContato():
     )
     db.session.add(contato)
     db.session.commit()
-    return 'HTTP/1.1', 201
+    return jsonify({'result': True})
 
 
 @app.route("/contato", methods=["GET"])
 def todosContatos():
     contato = Contato.query.all()
     contatos = []
-
-    for i in contato:
-        contatos.append(i.as_dict())
-
-    return json.dumps(contatos)
+    if contato != []:
+        for i in contato:
+            contatos.append(i.as_dict())
+        return json.dumps(contatos)
+    else:
+        return jsonify({'result': False}), 404
 
 
 @app.route("/contato/<string:params>", methods=["GET"])
 def busca(params):
-    contato = Contato.query.filter_by(nome = params).first()
+    contato = Contato.query.all()
+    res = []
+    if contato != []:
+        for i in contato:
+            if i.nome.upper().find(params.upper()) != -1 or i.empresa.upper().find(params.upper()) != -1 or i.email.upper().find(params.upper()) != -1:
+                res.append(i.as_dict())
+                return jsonify(res)
+    else:
+        return jsonify({'result': False}), 404
 
-    return jsonify(contato.as_dict())
+@app.route("/contato/id/<int:id>", methods=["GET"])
+def buscaById(id):
+    contato = Contato.query.get(id)
+    if contato != []:
+        return jsonify(contato.as_dict()), 200
+    else:
+        return jsonify({'result': False}), 404
 
 
 @app.route("/contato/<int:id>", methods=["DELETE"])
@@ -83,7 +98,14 @@ def deletarContatos(id):
 @app.route("/contato/<int:id>", methods=["PUT"])
 def editarContato(id):
     contato = Contato.query.get(id)
-    
-    return jsonify(contato.as_dict())
+    if contato != []:
+        contato.nome = request.form["nome"]
+        contato.empresa = request.form["empresa"]
+        contato.telefone = request.form["telefone"]
+        contato.email =  request.form["email"]
+        db.session.commit()
+        return jsonify({'result': True}), 200
+    else:
+        return jsonify({'result': False}), 404
 
 
